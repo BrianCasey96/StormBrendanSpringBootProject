@@ -49,7 +49,7 @@ public class WorkOrderController {
     ResponseEntity<?> newWorkOrder(@RequestBody WorkOrder newOrder) throws URISyntaxException {
 
         //check if user already exists
-        if (repository.findById(newOrder.getId()) == null){
+        if (!repository.findById(newOrder.getId()).isPresent()){
 
             EntityModel<WorkOrder> entityModel = assembler.toModel(repository.save(newOrder));
             return ResponseEntity
