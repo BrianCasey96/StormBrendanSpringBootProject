@@ -1,21 +1,19 @@
 package com.work_order.restapi;
 
-import org.aspectj.weaver.ast.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import net.minidev.json.JSONObject;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.mediatype.vnderrors.VndErrors;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -46,17 +44,24 @@ public class WorkOrderController {
         return new CollectionModel<>(orders);
     }
 
+
     @PostMapping("/work-orders")
     ResponseEntity<?> newWorkOrder(@RequestBody WorkOrder newOrder) throws URISyntaxException {
 
+        //check if user already exists
+        if (repository.findById(newOrder.getId()) == null){
 
-        //  newOrder.setStatus(e.getType(newOrder.getId()));
+            EntityModel<WorkOrder> entityModel = assembler.toModel(repository.save(newOrder));
+            return ResponseEntity
+                    .created(new URI(entityModel.getRequiredLink("self").getHref()))
+                    .body(entityModel);
 
-        EntityModel<WorkOrder> entityModel = assembler.toModel(repository.save(newOrder));
+        }
 
-        return ResponseEntity
-                .created(new URI(entityModel.getRequiredLink("self").getHref()))
-                .body(entityModel);
+        else{
+            return  ResponseEntity.badRequest().body("User with " + newOrder.getId() + " already has a work order in the queue");
+        }
+
     }
 
 
@@ -72,6 +77,7 @@ public class WorkOrderController {
     @GetMapping("/work-orders/position/{id}")
     String position(@PathVariable Long id) {
 
+        //check that the work order can be found or else throw exception
         WorkOrder order = repository.findById(id)
                 .orElseThrow(() -> new WorkOrderNotFoundException(id));
 
@@ -81,22 +87,28 @@ public class WorkOrderController {
 
         for (int i=0; i<orders.size(); i++){
             if (orders.get(i) == order){
-                 num = new Long (i);
+                num = new Long (i);
             }
         }
 
-        return num.toString() + " seconds";
+        return "In position: " + num.toString();
     }
 
     @GetMapping("/work-orders/averageWaitTime")
-    String averageWaitTime(@PathVariable Date date) {
-
+    ResponseEntity averageWaitTime(@RequestBody String date) {
 
         Long avgWaitTime = customisedWorkOrderRepository.getAverageWaitTime(date);
 
+        if(avgWaitTime != null) {
 
-        return avgWaitTime.toString();
+            return ResponseEntity.ok(avgWaitTime.toString() + " seconds");
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new VndErrors.VndError("Date format not correct", "Use this format: dd-MM-yyyy HH:mm:ss"));
     }
+
 
 
 
@@ -114,14 +126,17 @@ public class WorkOrderController {
 
 
     @DeleteMapping("/work-orders/delete/top")
-    ResponseEntity<WorkOrder> deleteTopOrder() {
+    String deleteTopOrder() {
 
         WorkOrder order = customisedWorkOrderRepository.getTopResult();
 
-       // if(order == null)
+        // if(order == null)
         repository.delete(order);
 
-        return ResponseEntity.noContent().build();
+        WorkOrder newTopOrder = customisedWorkOrderRepository.getTopResult();
+
+        return "Deleted order is:  ID: " + order.getId() + " Date: " + order.getDate() + "\nNew top order is " + newTopOrder.getId() + ". Date: " + newTopOrder.getDate()+ "\n";
+
     }
 
 

@@ -14,11 +14,6 @@ public class WorkOrderResourceAssembler implements RepresentationModelAssembler<
     @Override
     public EntityModel<WorkOrder> toModel(WorkOrder order) {
 
-      //  WorkOrder e =new WorkOrder();
-//        order.setStatus(e.getType(order.getId()));
-
-        System.out.println("waa");
-
         return new EntityModel<>(order,
                 linkTo(methodOn(WorkOrderController.class).one(order.getId())).withSelfRel(),
                 linkTo(methodOn(WorkOrderController.class).all()).withRel("work-orders"));

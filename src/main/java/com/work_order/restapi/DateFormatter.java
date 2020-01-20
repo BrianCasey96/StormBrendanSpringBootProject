@@ -41,7 +41,7 @@ public class DateFormatter  {
 
         int day = createRandomIntBetween(1, 28);
         int month = createRandomIntBetween(1, 12);
-        int year = createRandomIntBetween(1970, 2020);
+        int year = createRandomIntBetween(2019, 2020);
 
         int hour = createRandomIntBetween(0,12);
         int min_sec = createRandomIntBetween(0, 60);

@@ -9,5 +9,5 @@ interface CustomisedWorkOrderRepository {
 
     WorkOrder getTopResult();
 
-    Long getAverageWaitTime(Date date);
+    Long getAverageWaitTime(String date);
 }

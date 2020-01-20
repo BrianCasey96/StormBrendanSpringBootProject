@@ -5,6 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 interface WorkOrderRepository extends JpaRepository<WorkOrder, Long> {
-
-//removed customised workorderrepositoy
+    
 }

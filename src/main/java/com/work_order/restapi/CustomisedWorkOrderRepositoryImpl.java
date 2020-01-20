@@ -1,6 +1,7 @@
 package com.work_order.restapi;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
@@ -86,22 +87,35 @@ class CustomisedWorkOrderRepositoryImpl implements CustomisedWorkOrderRepository
     @Override
     public WorkOrder getTopResult() {
 
+        WorkOrder order = sortByRank().get(0);
         return sortByRank().get(0);
 
     }
 
     @Override
-    public Long getAverageWaitTime(Date date) {
+    public Long getAverageWaitTime(String date) {
         List<WorkOrder> list = workOrderRepository.findAll();
-        Long seconds = 0L;
 
+        Date converted;
+        try {
+            converted = dateFormatter.stringToDate(date);
+            Long seconds = 0L;
 
-        for (WorkOrder l : list) {
+            for (WorkOrder l : list) {
 
-           seconds  +=  (date.getTime()-l.getDate().getTime())/1000;
+                seconds  +=  (converted.getTime()-l.getDate().getTime())/1000;
+
+            }
+
+            return seconds/ list.size();
+
+        }
+        catch(Exception dateFromat){
+
         }
 
-        return seconds;
+        return  null;
+
     }
 
 
@@ -112,22 +126,5 @@ class CustomisedWorkOrderRepositoryImpl implements CustomisedWorkOrderRepository
                         (e1, e2) -> e1, LinkedHashMap::new));
     }
 
-
-//    public List<WorkOrder> getAllByStatus(IDType status){
-//
-//        List<WorkOrder> list = workOrderRepository.findAll();
-//        List<WorkOrder> getType = new ArrayList<>();
-//
-//        for (WorkOrder l : list){
-//
-//            if(status.equals(l.getType(l.getId())){
-//
-//                getType.add(l);
-//            }
-//
-//            return  getType;
-//
-//        }
-//    }
 }
 
