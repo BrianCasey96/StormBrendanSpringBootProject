@@ -4,7 +4,7 @@ Setting up
 ------------
 	- git clone this project 
 	- do a 'mvn clean install -U' from the base directory
-	- run the program from main class StormBrendanApplication
+	- to run from a terminal try 'mvn spring-boot:run' or else run the program in Eclipse/IntelliJ from main class 	StormBrendanApplication in 
 
 Timestamp is in the format: dd-MM-yyyy HH:mm:ss
 
