@@ -2,9 +2,9 @@
 
 Setting up
 ------------
-git clone this project 
-do a mvn clean install -U
-run the program from main class StormBrendanApplication
+	- git clone this project 
+	- do a 'mvn clean install -U' from the base directory
+	- run the program from main class StormBrendanApplication
 
 Timestamp is in the format: dd-MM-yyyy HH:mm:ss
 
@@ -31,7 +31,8 @@ Timestamp is in the format: dd-MM-yyyy HH:mm:ss
 ### Delete a specific work order (Pass in an id)
     curl -X DELETE localhost:8080/work-orders/delete/{id}
     
-### Delete a the top work order in the queue
+### Delete the top work order in the queue
     curl -X DELETE localhost:8080/work-orders/delete/top
+    Will return the order deleted and the new order at the top of the queue
     
 	
