@@ -37,21 +37,17 @@ class CustomisedWorkOrderRepositoryImpl implements CustomisedWorkOrderRepository
 
                 case NORMAL:
                     normalPriorityAndVIP.put(l.getId(), seconds);
-                    System.out.println(seconds);
                     break;
                 case PRIORITY:
                     Long rank = (long) Math.max(3, seconds*(Math.log(seconds)));
-                    System.out.println(rank);
                     normalPriorityAndVIP.put(l.getId(), rank);
                     break;
                 case VIP:
                     Long rank1 = (long) Math.max(4, (2*seconds)*(Math.log(seconds)));
-                    System.out.println(rank1);
                     normalPriorityAndVIP.put(l.getId(), rank1);
                     break;
                 case MANAGEMENT_OVERRIDE:
                     management.put(l.getId(), seconds);
-                    System.out.println(seconds);
                     break;
             }
 
