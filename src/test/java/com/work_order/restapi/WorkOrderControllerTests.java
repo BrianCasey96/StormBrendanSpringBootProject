@@ -81,7 +81,7 @@ public class WorkOrderControllerTests {
 
         allOrders  = new ArrayList<>();
 
-         order1 = new WorkOrder(normal, date1);
+        order1 = new WorkOrder(normal, date1);
         WorkOrder order2 = new WorkOrder(priority, date2);
         WorkOrder order3 = new WorkOrder(vip, date3);
         WorkOrder order4 = new WorkOrder(management_override, date4);
@@ -92,7 +92,6 @@ public class WorkOrderControllerTests {
         allOrders.add(order4);
 
        entityModel  = new EntityModel<>(order1);
-
     }
 
 
@@ -101,10 +100,10 @@ public class WorkOrderControllerTests {
         // Mocking service
 
         CustomisedWorkOrderRepository mock = org.mockito.Mockito.mock(CustomisedWorkOrderRepository.class);
-       // WorkOrderResourceAssembler ass = org.mockito.Mockito.mock(WorkOrderResourceAssembler.class);
+       // WorkOrderResourceAssembler assembler = org.mockito.Mockito.mock(WorkOrderResourceAssembler.class);
 
         when(mock.sortByRank()).thenReturn(allOrders);
-      //  when(ass.toModel(any())).thenReturn(entityModel);
+      //  when(assembler.toModel(any())).thenReturn(entityModel);
 
         mockMvc.perform(get("/work-orders").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
